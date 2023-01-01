@@ -1,10 +1,10 @@
 fächer = {
+    'min_slot_size': 1,
     'empty_fach_name': 'N/A',
     'not_included_fach_name': 'NOT INCLUDED',
 }
 
 options = {
-    'slot_length': 1,
     'fächer': fächer
 }
 

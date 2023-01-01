@@ -1,3 +1,5 @@
+import string
+
 import stundenplan.options as options
 from tabulate import tabulate
 
@@ -81,20 +83,35 @@ class Stundenplan:
     Repräsentiert einen Stundenplan pro Klassenstufe.
     Und beinhalet die Fächer, die Wochentage und die Slots.
     """
-    def __init__(self, klassenstufe: int, fächer: [Fach], wochentage: [Wochentag]):
+
+    def __init__(self, klassenstufe: int, fächer: [Fach] = [], wochentage: [Wochentag] = []):
         self.klassenstufe = klassenstufe
         self.fächer = fächer
         self.wochentage = wochentage
-        self.plan = {Wochentag: {int: Slot}}
+        self.plan: {string: {int: Slot}} = {}
+        if wochentage:
+            self.init_plan()
+
+    def init_plan(self):
         # erstelle leeren Stundenplan
-        for wochentag in wochentage:
-            self.plan[wochentag] = {}
+        for wochentag in self.wochentage:
+            self.plan[wochentag.name] = {}
             for stunde in range(self.get_earliest_stunden(), self.get_latest_stunden() + 1):
                 if stunde in wochentag.slot_size_map.keys():
-                    self.plan[wochentag][stunde] = Slot(Stunde(stunde, wochentag, klassenstufe), Fach.empty_fach())
+                    self.plan[wochentag.name][stunde] = Slot(Stunde(stunde, wochentag, self.klassenstufe),
+                                                             Fach.empty_fach())
                 else:
-                    self.plan[wochentag][stunde] = Slot(Stunde(stunde, wochentag, klassenstufe),
-                                                        Fach.not_include_fach())
+                    self.plan[wochentag.name][stunde] = Slot(Stunde(stunde, wochentag, self.klassenstufe),
+                                                             Fach.not_include_fach())
+
+    def add_wochentag(self, name, slotmap: {int: int}):
+        """Fügt einen Wochentag der Liste zur Verarbeitung hinzu"""
+        self.wochentage.append(Wochentag(name, slotmap))
+        self.init_plan()
+
+    def add_fach(self, fach):
+        """Fügt ein Fach der Liste zur Verarbeitung hinzu"""
+        self.fächer.append(fach)
 
     def get_latest_stunden(self):
         return max(wochentag.latest_stunden for wochentag in self.wochentage)
@@ -107,7 +124,7 @@ class Stundenplan:
         stundenplan = {"Stunde": list(range(self.get_earliest_stunden(), self.get_latest_stunden() + 1))}
         # füge die Wochentage als Spalten hinzu
         for wochentag in self.wochentage:
-            stundenplan[wochentag.name] = map(lambda slot: slot.fach.name, sorted(self.plan[wochentag].values(),
+            stundenplan[wochentag.name] = map(lambda slot: slot.fach.name, sorted(self.plan[wochentag.name].values(),
                                                                                   key=lambda
                                                                                       slot: slot.stunde.nummer))
 

@@ -1,32 +1,28 @@
 import stundenplan
 
-
 # This is a sample Python script.
 
 # Press Umschalt+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Strg+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-    slotmap = {1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 10: 1}
-    slotmap2 = {-1:1, 1: 1,  3: 1, 4: 1, 5: 1, 7: 1}
-    wochentage = [stundenplan.classes.Wochentag("Montag", slotmap),
-                  stundenplan.classes.Wochentag("Dienstag", slotmap),
-                  stundenplan.classes.Wochentag("Mittwoch", slotmap2),
-                  stundenplan.classes.Wochentag("Donnerstag", slotmap),
-                  stundenplan.classes.Wochentag("Freitag", slotmap)]
 
-    fächer = [stundenplan.classes.Fach("Mathe", 6), stundenplan.classes.Fach("Deutsch", 6)]
+    stundenpläne = stundenplan.init_stundenpläne(5, 6)
 
-    stundenplan = stundenplan.classes.Stundenplan(klassenstufe=10, fächer=fächer, wochentage=wochentage)
+    früh_slots = stundenplan.slotmap(list(range(-2, 1)), 1)
+    morgen_slots = stundenplan.slotmap(list(range(1, 7)), 1)
+    spät_slots = stundenplan.slotmap(list(range(8, 11)), 1)
+    slotmap = {**morgen_slots, **spät_slots, **früh_slots}
 
-    print(stundenplan.get_as_table())
+    for i, stundenplan in stundenpläne.items():
+        stundenplan.add_wochentag("Montag", slotmap)
+        stundenplan.add_wochentag("Dienstag", slotmap)
+        stundenplan.add_wochentag("Mittwoch", morgen_slots)
+        stundenplan.add_wochentag("Donnerstag", slotmap)
+        stundenplan.add_wochentag("Freitag", slotmap)
+        stundenplan.fächer = [stundenplan.classes.Fach("Mathe", 6), stundenplan.classes.Fach("Deutsch", 6)]
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    for i, stundenplan in stundenpläne.items():
+        print("\n\nStundenplan für Klasse " + str(i))
+        print(stundenplan.get_as_table())
