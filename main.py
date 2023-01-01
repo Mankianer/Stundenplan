@@ -21,6 +21,9 @@ if __name__ == '__main__':
     for i, stundenplan_ in stundenpläne.items():
         stundenplan_.add_wochentag("Montag", slotmap)
         stundenplan_.add_wochentag("Dienstag", slotmap)
+        stundenplan_.add_wochentag("Mittwoch", morgen_slots)
+        stundenplan_.add_wochentag("Donnerstag", slotmap)
+        stundenplan_.add_wochentag("Freitag", slotmap)
         stundenplan_.fächer = [stundenplan.classes.Fach("Mathe", 6), stundenplan.classes.Fach("Deutsch", 6)]
 
     # Fächer in Stundenpläne eintragen (erzeugen)
