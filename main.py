@@ -1,5 +1,7 @@
 import stundenplan
 
+from tabulate import tabulate
+
 # This is a sample Python script.
 
 # Press Umschalt+F10 to execute it or replace it with your code.
@@ -15,14 +17,20 @@ if __name__ == '__main__':
     spät_slots = stundenplan.slotmap(list(range(8, 11)), 1)
     slotmap = {**morgen_slots, **spät_slots, **früh_slots}
 
-    for i, stundenplan in stundenpläne.items():
-        stundenplan.add_wochentag("Montag", slotmap)
-        stundenplan.add_wochentag("Dienstag", slotmap)
-        stundenplan.add_wochentag("Mittwoch", morgen_slots)
-        stundenplan.add_wochentag("Donnerstag", slotmap)
-        stundenplan.add_wochentag("Freitag", slotmap)
-        stundenplan.fächer = [stundenplan.classes.Fach("Mathe", 6), stundenplan.classes.Fach("Deutsch", 6)]
+    # Init Stundenpläne + Konfiguration
+    for i, stundenplan_ in stundenpläne.items():
+        stundenplan_.add_wochentag("Montag", slotmap)
+        stundenplan_.add_wochentag("Dienstag", slotmap)
+        stundenplan_.add_wochentag("Mittwoch", morgen_slots)
+        stundenplan_.add_wochentag("Donnerstag", slotmap)
+        stundenplan_.add_wochentag("Freitag", slotmap)
+        stundenplan_.fächer = [stundenplan.classes.Fach("Mathe", 6), stundenplan.classes.Fach("Deutsch", 6)]
 
+    # Fächer in Stundenpläne eintragen (erzeugen)
+
+    # Stundenpläne ausgeben
     for i, stundenplan in stundenpläne.items():
         print("\n\nStundenplan für Klasse " + str(i))
         print(stundenplan.get_as_table())
+
+        # print(stundenplan_.plan["Montag"][1].stunde)

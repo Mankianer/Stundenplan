@@ -1,5 +1,3 @@
-import string
-
 import stundenplan.options as options
 from tabulate import tabulate
 
@@ -18,13 +16,15 @@ class Wochentag:
 
 class Stunde:
     """
-    Repräsentiert eine Stunde, die die Position im Stundenplan(nummer, tag, stufe)
+    Repräsentiert eine Stunde, die die Position im Stundenplan(nummer, tag, stufe).
+    So wie eine Bevorzugte/Maximale Slotgröße.
     """
 
     def __init__(self, nummer, wochentag: Wochentag, klassenstufe: int):
         self.nummer = nummer
         self.wochentag = wochentag
         self.klassenstufe = klassenstufe
+        self.max_slot_size = wochentag.slot_size_map[nummer] if nummer in wochentag.slot_size_map else 1
 
     def __str__(self):
         return self.wochentag.name + ", " + str(self.nummer) + ". Stunde, " + str(self.klassenstufe) + ". Klasse"
@@ -62,14 +62,12 @@ class Fach:
 class Slot:
     """
     Repräsentiert einen Slot im Stundenplan, der eine Stunde und ein Fach beinhaltet.
-    So wie eine Bevorzugte/Maximale Slotgröße.
     """
 
-    def __init__(self, stunde: Stunde, fach: Fach):
+    def __init__(self, stunde: Stunde, fach: Fach, slot_size: int = 1):
         self.fach = fach
         self.stunde = stunde
-        self.max_slot_size = stunde.wochentag.slot_size_map[
-            stunde.nummer] if stunde.nummer in stunde.wochentag.slot_size_map else 1
+        self.slot_size = slot_size
 
     def __str__(self):
         return f"{self.stunde}-({self.fach}))"
@@ -88,7 +86,7 @@ class Stundenplan:
         self.klassenstufe = klassenstufe
         self.fächer = fächer
         self.wochentage = wochentage
-        self.plan: {string: {int: Slot}} = {}
+        self.plan: {str: {int: Slot}} = {}
         if wochentage:
             self.init_plan()
 

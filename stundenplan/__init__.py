@@ -1,4 +1,6 @@
 import stundenplan.classes
+import stundenplan.slot_pool as slot_pool
+import stundenplan.default_slot_generator
 
 stundenpläne = {}
 
