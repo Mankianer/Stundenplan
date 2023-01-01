@@ -1,6 +1,6 @@
 fächer = {
-    'min_slot_size': 1,
     'empty_fach_name': 'N/A',
+    'not_included_fach_name': 'NOT INCLUDED',
 }
 
 options = {
@@ -9,11 +9,13 @@ options = {
 }
 
 
-def get_default_slot_length():
-    return options['slot_length']
-
 def get_default_min_slot_size():
     return options['fächer']['min_slot_size']
 
+
 def get_default_empty_fach_name():
     return options['fächer']['empty_fach_name']
+
+
+def get_default_not_include_fach_name():
+    return options['fächer']['not_included_fach_name']

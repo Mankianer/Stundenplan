@@ -16,7 +16,7 @@ def print_hi(name):
 if __name__ == '__main__':
     print_hi('PyCharm')
     slotmap = {1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 10: 1}
-    slotmap2 = {1: 1, 2: 1, 3: 1, 4: 1, 5: 1}
+    slotmap2 = {-1:1, 1: 1,  3: 1, 4: 1, 5: 1, 7: 1}
     wochentage = [stundenplan.classes.Wochentag("Montag", slotmap),
                   stundenplan.classes.Wochentag("Dienstag", slotmap),
                   stundenplan.classes.Wochentag("Mittwoch", slotmap2),
