@@ -17,10 +17,10 @@ def slot_generator_method(func: Callable[[Stunde, List[Fach]], List[Slot]]) -> [
     return func
 
 
-def call_slot_generator_methods(stunde: Stunde, fächer: List[Fach]) -> [List[Slot]]:
+def get_slots(stunde: Stunde, fächer: List[Fach]) -> [Slot]:
     """Ruft alle slot_generator_methods auf und gibt das Ergebnis als Liste zurück"""
     slots = []
     for method in slot_generator_methods:
-        slots.append(method(stunde, fächer)) # klappt das mit mehreren Slots?
+        slots.extend(method(stunde, fächer))
     return slots
 

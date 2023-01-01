@@ -1,5 +1,6 @@
 import stundenplan.options as options
 from tabulate import tabulate
+import logging
 
 
 class Wochentag:
@@ -13,6 +14,8 @@ class Wochentag:
         self.latest_stunden = max(slot_size_map.keys())
         self.earliest_stunden = min(slot_size_map.keys())
 
+    def get_stunden(self):
+        return sorted(self.slot_size_map.keys())
 
 class Stunde:
     """
@@ -49,14 +52,23 @@ class Fach:
         return self.__str__()
 
     @classmethod
+    def __empty_fach(cls, name):
+        return cls(name, 0, 0)
+
+    @classmethod
     def empty_fach(cls):
         """Repräsentiert eine noch nicht belegte Stunde"""
-        return cls(options.get_default_empty_fach_name(), 0, 0)
+        return cls.__empty_fach(options.get_default_empty_fach_name())
 
     @classmethod
     def not_include_fach(cls):
         """Repräsentiert eine Stunde, die nicht belegt werden soll"""
-        return cls(options.get_default_not_include_fach_name(), 0, 0)
+        return cls.__empty_fach(options.get_default_not_include_fach_name())
+
+    @classmethod
+    def not_found_fach(cls):
+        """Repräsentiert eine Stunde, die nicht belegt werden soll"""
+        return cls.__empty_fach(options.get_default_not_found_fach_name())
 
 
 class Slot:
@@ -79,7 +91,7 @@ class Slot:
 class Stundenplan:
     """
     Repräsentiert einen Stundenplan pro Klassenstufe.
-    Und beinhalet die Fächer, die Wochentage und die Slots.
+    Und beinhalte die Fächer, die Wochentage und die Slots.
     """
 
     def __init__(self, klassenstufe: int, fächer: [Fach] = [], wochentage: [Wochentag] = []):
@@ -102,6 +114,14 @@ class Stundenplan:
                     self.plan[wochentag.name][stunde] = Slot(Stunde(stunde, wochentag, self.klassenstufe),
                                                              Fach.not_include_fach())
 
+    def add_slot(self, slot: Slot):
+        """Fügt einen Slot zum Stundenplan hinzu, auch in mehreren Stunden und zählt die Stunden des Faches runter"""
+        for stunde in range(slot.stunde.nummer, slot.stunde.nummer + slot.slot_size):
+            self.plan[slot.stunde.wochentag.name][stunde] = slot
+            fach = self.get_fach(slot.fach.name)
+            if fach:
+                fach.anzahl_stunden -= 1
+
     def add_wochentag(self, name, slotmap: {int: int}):
         """Fügt einen Wochentag der Liste zur Verarbeitung hinzu"""
         self.wochentage.append(Wochentag(name, slotmap))
@@ -110,6 +130,14 @@ class Stundenplan:
     def add_fach(self, fach):
         """Fügt ein Fach der Liste zur Verarbeitung hinzu"""
         self.fächer.append(fach)
+
+    def get_fach(self, name):
+        """Gibt das Fach mit dem Namen zurück"""
+        for fach in self.fächer:
+            if fach.name == name:
+                return fach
+        logging.warning(f"Kein Fach mit dem Namen {name} gefunden!")
+        return None
 
     def get_latest_stunden(self):
         return max(wochentag.latest_stunden for wochentag in self.wochentage)
