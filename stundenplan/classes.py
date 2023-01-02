@@ -80,6 +80,7 @@ class Slot:
         self.fach = fach
         self.stunde = stunde
         self.slot_size = slot_size
+        self.ranking = 0
 
     def __str__(self):
         return f"{self.stunde}-({self.fach}))"

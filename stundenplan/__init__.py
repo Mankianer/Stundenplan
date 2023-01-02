@@ -1,6 +1,7 @@
 from stundenplan.classes import Slot, Stunde, Fach, Stundenplan
 import stundenplan.slot_pool as slot_pool
 import stundenplan.default_slot_generator
+import stundenplan.default_slot_ranking
 
 stundenpläne: {int: Stundenplan} = {}
 
@@ -39,5 +40,7 @@ def fill_stundenpläne(stundenpläne: {int: Stundenplan} = stundenpläne):
                 if not possible_slots:
                     stundenplan_.add_slot(Slot(stunde, Fach.not_found_fach()))
                     continue
+                slot_pool.set_slot_ranking(possible_slots)
+                possible_slots = sorted(possible_slots, key=lambda slot: slot.ranking, reverse=True)
                 stundenplan_.add_slot(possible_slots[0])
                 skip_stunden_count = possible_slots[0].slot_size - 1

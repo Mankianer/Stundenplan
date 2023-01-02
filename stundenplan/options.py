@@ -5,6 +5,10 @@ fächer = {
     'not_found_fach_name': 'NOT FOUND',
 }
 
+default_slot_ranking = {
+    'fit_perfect': 20,
+}
+
 options = {
     'fächer': fächer
 }
@@ -21,5 +25,13 @@ def get_default_empty_fach_name():
 def get_default_not_include_fach_name():
     return options['fächer']['not_included_fach_name']
 
+
 def get_default_not_found_fach_name():
     return options['fächer']['not_found_fach_name']
+
+
+### default_slot_ranking.py
+
+
+def get_slot_ranking_fit_perfect():
+    return default_slot_ranking['fit_perfect']
