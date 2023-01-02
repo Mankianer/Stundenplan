@@ -5,8 +5,9 @@ fächer = {
     'not_found_fach_name': 'NOT FOUND',
 }
 
-default_slot_ranking = {
+default_slot = {
     'fit_perfect': 20,
+    'ranking_threadhold': 0,
 }
 
 options = {
@@ -34,4 +35,8 @@ def get_default_not_found_fach_name():
 
 
 def get_slot_ranking_fit_perfect():
-    return default_slot_ranking['fit_perfect']
+    return default_slot['fit_perfect']
+
+
+def get_slot_ranking_threadhold():
+    return default_slot['ranking_threadhold']
