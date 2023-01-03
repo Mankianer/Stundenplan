@@ -42,7 +42,7 @@ def fill_stundenpläne(stundenpläne: {int: Stundenplan} = stundenpläne):
                 # ranking der Slots
                 slot_pool.set_slot_ranking(possible_slots, stundenplan_)
                 # filtere Slots
-                possible_slots = slot_pool.filter_slots(possible_slots)
+                possible_slots = slot_pool.filter_slots(possible_slots, stundenplan_)
 
                 if not possible_slots:
                     stundenplan_.add_slot(Slot(stunde, Fach.not_found_fach()))

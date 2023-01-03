@@ -9,7 +9,7 @@ Stundenplan = TypeVar("Stundenplan", bound=stundenplan.classes.Stundenplan)
 
 slot_generator_methods: [Callable[[Stunde, List[Fach]], List[Slot]]] = []
 slot_ranking_methods: [Callable[[Slot, Stundenplan], int]] = []
-slot_filter_methods: [Callable[[Slot], bool]] = []
+slot_filter_methods: [Callable[[Slot, Stundenplan], bool]] = []
 
 
 def slot_generator_method(func: Callable[[Stunde, List[Fach]], List[Slot]]) -> [
@@ -28,12 +28,12 @@ def slot_ranking_method(func: Callable[[Slot, Stundenplan], int]) -> [Callable[[
     return func
 
 
-def slot_filter_method(func: Callable[[Slot], bool]) -> [Callable[[Slot], bool]]:
+def slot_filter_method(func: Callable[[Slot, Stundenplan], bool]) -> [Callable[[Slot, Stundenplan], bool]]:
     """Fügt eine Methode der Liste der Methoden hinzu
     True if the slot should be filtered out"""
     slot_filter_methods.append(func)
 
-    #get Parameter from the function
+    # get Parameter from the function
     import inspect
     params = inspect.signature(func).parameters
     default = params.get("option").default
@@ -47,20 +47,22 @@ def slot_filter_method(func: Callable[[Slot], bool]) -> [Callable[[Slot], bool]]
 
     return func
 
-def filter_slots(slots: [Slot]) -> [Slot]:
-    """Ruft alle slot_filter_methods auf und gibt das Ergebnis als Liste zurück"""
-    return [slot for slot in slots if all(not method(slot) for method in slot_filter_methods)]
 
-def get_ranking(slot: Slot, stundenplan: Stundenplan) -> int:
+def filter_slots(slots: [Slot], stundenplan_: Stundenplan) -> [Slot]:
+    """Ruft alle slot_filter_methods auf und gibt das Ergebnis als Liste zurück"""
+    return [slot for slot in slots if all(not method(slot, stundenplan_) for method in slot_filter_methods)]
+
+
+def get_ranking(slot: Slot, stundenplan_: Stundenplan) -> int:
     """Ruft alle slot_ranking_methods auf und gibt das Ergebnis als Liste zurück"""
-    ranking = sum(method(slot, stundenplan) for method in slot_ranking_methods)
+    ranking = sum(method(slot, stundenplan_) for method in slot_ranking_methods)
     return ranking
 
 
-def set_slot_ranking(slots: [Slot], stundenplan: Stundenplan):
+def set_slot_ranking(slots: [Slot], stundenplan_: Stundenplan):
     """Setzt den Rang der Slots"""
     for slot in slots:
-        slot.ranking = get_ranking(slot, stundenplan)
+        slot.ranking = get_ranking(slot, stundenplan_)
 
 
 def get_slots(stunde: Stunde, fächer: List[Fach]) -> [Slot]:

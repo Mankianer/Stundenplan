@@ -1,5 +1,5 @@
 import stundenplan.slot_pool as slot_pool
-from stundenplan.classes import Slot
+from stundenplan.classes import Slot, Stundenplan
 
 import stundenplan.options as options
 
@@ -12,10 +12,7 @@ class DefaultFilterOption:
 
 
 @slot_pool.slot_filter_method
-def ranking_above_threshold(slot: Slot, option: DefaultFilterOption = DefaultFilterOption()) -> bool:
+def ranking_above_threshold(slot: Slot, stundenplan_: Stundenplan, option: DefaultFilterOption = DefaultFilterOption()) -> bool:
     """filter out slots with a ranking below the threshold"""
-
-    def test():
-        return "test"
 
     return slot.ranking < option.slot_ranking_threshold

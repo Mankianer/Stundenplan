@@ -17,6 +17,7 @@ class Wochentag:
     def get_stunden(self):
         return sorted(self.slot_size_map.keys())
 
+
 class Stunde:
     """
     Repräsentiert eine Stunde, die die Position im Stundenplan(nummer, tag, stufe).
