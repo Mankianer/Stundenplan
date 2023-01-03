@@ -119,7 +119,7 @@ class Stundenplan:
         """Fügt einen Slot zum Stundenplan hinzu, auch in mehreren Stunden und zählt die Stunden des Faches runter"""
         for stunde in range(slot.stunde.nummer, slot.stunde.nummer + slot.slot_size):
             self.plan[slot.stunde.wochentag.name][stunde] = slot
-            fach = self.get_fach(slot.fach.name)
+            fach = self.get_fach(slot.fach)
             if fach:
                 fach.anzahl_stunden -= 1
 
@@ -132,13 +132,14 @@ class Stundenplan:
         """Fügt ein Fach der Liste zur Verarbeitung hinzu"""
         self.fächer.append(fach)
 
-    def get_fach(self, name):
+    def get_fach(self, fach_):
         """Gibt das Fach mit dem Namen zurück"""
         for fach in self.fächer:
-            if fach.name == name:
+            if fach.name == fach_.name:
                 return fach
-        logging.warning(f"Kein Fach mit dem Namen {name} gefunden!")
-        return None
+        if fach_.name == Fach.empty_fach().name or fach_.name == Fach.not_include_fach().name:
+            logging.warning(f"Kein Fach mit dem Namen {fach_.name} gefunden!")
+        return fach_
 
     def get_latest_stunden(self):
         return max(wochentag.latest_stunden for wochentag in self.wochentage)

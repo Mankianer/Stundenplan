@@ -40,7 +40,7 @@ def fill_stundenpläne(stundenpläne: {int: Stundenplan} = stundenpläne):
                 possible_slots = slot_pool.get_slots(stunde, stundenplan_.fächer)
 
                 # ranking der Slots
-                slot_pool.set_slot_ranking(possible_slots)
+                slot_pool.set_slot_ranking(possible_slots, stundenplan_)
                 # filtere Slots
                 possible_slots = slot_pool.filter_slots(possible_slots)
 

@@ -7,7 +7,7 @@ fächer = {
 
 default_slot = {
     'fit_perfect': 20,
-    'ranking_threadhold': 0,
+    'ranking_threshold': 0,
 }
 
 options = {
@@ -38,5 +38,5 @@ def get_slot_ranking_fit_perfect():
     return default_slot['fit_perfect']
 
 
-def get_slot_ranking_threadhold():
-    return default_slot['ranking_threadhold']
+def get_slot_ranking_threshold():
+    return default_slot['ranking_threshold']
