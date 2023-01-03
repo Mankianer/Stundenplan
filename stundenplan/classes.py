@@ -96,7 +96,7 @@ class Stundenplan:
     Und beinhalte die Fächer, die Wochentage und die Slots.
     """
 
-    def __init__(self, klassenstufe: int, fächer: [Fach] = [], wochentage: [Wochentag] = []):
+    def __init__(self, klassenstufe: any, fächer: [Fach] = [], wochentage: [Wochentag] = []):
         self.klassenstufe = klassenstufe
         self.fächer = fächer
         self.wochentage = wochentage
