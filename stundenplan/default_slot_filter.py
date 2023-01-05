@@ -6,9 +6,9 @@ import stundenplan.options as options
 
 class DefaultFilterOption:
     def __init__(self):
-        self.name = "DefaultFilterOption"
+        self.name = "DefaultRankingOption"
         self.description = "Default Filter Option"
-        self.slot_ranking_threshold = options.get_slot_ranking_threshold()
+        self.slot_ranking_threshold = 0
 
 
 @slot_pool.slot_filter_method

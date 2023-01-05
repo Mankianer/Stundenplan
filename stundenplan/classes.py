@@ -1,4 +1,5 @@
 import stundenplan.options as options
+from stundenplan.options import Options
 from tabulate import tabulate
 import logging
 
@@ -39,11 +40,12 @@ class Fach:
     Repräsentiert ein Fach mit seinen Bedingungen zur Belegung eines Slots im Stundenplan
     """
 
-    def __init__(self, name, anzahl_stunden: int, min_slot_size: int = options.get_default_min_slot_size()):
+    def __init__(self, name, anzahl_stunden: int, min_slot_size: int = -1):
+        self.muss_zusammen = None
+        self.min_slot_size = None
         self.name = name
         self.anzahl_stunden = anzahl_stunden
-        self.min_slot_size = min_slot_size
-        self.muss_zusammen = min_slot_size > 1
+        self.set_min_slot_size(min_slot_size)
 
     def __str__(self):
         return self.name + " (" + str(self.anzahl_stunden) + " Stunden)" + (
@@ -52,24 +54,28 @@ class Fach:
     def __repr__(self):
         return self.__str__()
 
+    def set_min_slot_size(self, min_slot_size: int):
+        self.min_slot_size = min_slot_size
+        self.muss_zusammen = min_slot_size > 1
+
     @classmethod
     def __empty_fach(cls, name):
         return cls(name, 0, 0)
 
     @classmethod
-    def empty_fach(cls):
+    def empty_fach(cls, name):
         """Repräsentiert eine noch nicht belegte Stunde"""
-        return cls.__empty_fach(options.get_default_empty_fach_name())
+        return cls.__empty_fach(name)
 
     @classmethod
-    def not_include_fach(cls):
+    def not_include_fach(cls, name):
         """Repräsentiert eine Stunde, die nicht belegt werden soll"""
-        return cls.__empty_fach(options.get_default_not_include_fach_name())
+        return cls.__empty_fach(name)
 
     @classmethod
-    def not_found_fach(cls):
+    def not_found_fach(cls, name):
         """Repräsentiert eine Stunde, die nicht belegt werden soll"""
-        return cls.__empty_fach(options.get_default_not_found_fach_name())
+        return cls.__empty_fach(name)
 
 
 class Slot:
@@ -96,25 +102,30 @@ class Stundenplan:
     Und beinhalte die Fächer, die Wochentage und die Slots.
     """
 
-    def __init__(self, klassenstufe: any, fächer: [Fach] = [], wochentage: [Wochentag] = []):
+    def __init__(self, klassenstufe: any, fächer: [Fach] = [], wochentage: [Wochentag] = [],
+                 options: Options = options.get_default_options()):
         self.klassenstufe = klassenstufe
         self.fächer = fächer
         self.wochentage = wochentage
         self.plan: {str: {int: Slot}} = {}
+        self.options = options
         if wochentage:
             self.init_plan()
 
     def init_plan(self):
+
         # erstelle leeren Stundenplan
         for wochentag in self.wochentage:
             self.plan[wochentag.name] = {}
             for stunde in range(self.get_earliest_stunden(), self.get_latest_stunden() + 1):
                 if stunde in wochentag.slot_size_map.keys():
                     self.plan[wochentag.name][stunde] = Slot(Stunde(stunde, wochentag, self.klassenstufe),
-                                                             Fach.empty_fach())
+                                                             Fach.empty_fach(
+                                                                 self.options.get_default_empty_fach_name()))
                 else:
                     self.plan[wochentag.name][stunde] = Slot(Stunde(stunde, wochentag, self.klassenstufe),
-                                                             Fach.not_include_fach())
+                                                             Fach.not_include_fach(
+                                                                 self.options.get_default_not_include_fach_name()))
 
     def add_slot(self, slot: Slot):
         """Fügt einen Slot zum Stundenplan hinzu, auch in mehreren Stunden und zählt die Stunden des Faches runter"""
@@ -131,6 +142,8 @@ class Stundenplan:
 
     def add_fach(self, fach):
         """Fügt ein Fach der Liste zur Verarbeitung hinzu"""
+        if fach.min_slot_size == -1:
+            fach.set_min_slot_size(self.options.get_default_min_slot_size())
         self.fächer.append(fach)
 
     def get_fach(self, fach_):
@@ -138,7 +151,7 @@ class Stundenplan:
         for fach in self.fächer:
             if fach.name == fach_.name:
                 return fach
-        if fach_.name == Fach.empty_fach().name or fach_.name == Fach.not_include_fach().name:
+        if fach_.name == self.options.get_default_empty_fach_name() or fach_.name == self.options.get_default_not_include_fach_name():
             logging.warning(f"Kein Fach mit dem Namen {fach_.name} gefunden!")
         return fach_
 

@@ -1,9 +1,9 @@
 import stundenplan.slot_pool as slot_pool
-from stundenplan.classes import Slot, Stunde, Fach
+from stundenplan.classes import Slot, Stunde, Fach, Stundenplan
 
 
 @slot_pool.slot_generator_method
-def default_slot_generator(stunde: Stunde, fächer: [Fach]) -> Slot:
+def default_slot_generator(stunde: Stunde, fächer: [Fach], stundenplan_: Stundenplan, option=None) -> Slot:
     """Generiert einen Slot mit den Standardwerten"""
     slots = []
     for fach in fächer:

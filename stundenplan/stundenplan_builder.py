@@ -2,7 +2,6 @@ import stundenplan.slot_pool as slot_pool
 from stundenplan import Stundenplan, Fach, Slot
 
 
-
 def init_stundenpläne(*klassenstufen: any) -> {any: Stundenplan}:
     """Erstellt die Stundenpläne für alle Klassenstufen"""
     stundenpläne: {any: Stundenplan} = {}
@@ -24,7 +23,7 @@ def fill_stundenpläne(stundenpläne: {any: Stundenplan}):
                     continue
                 # print(stundenplan_.get_as_table())
                 # hole mögliche Slots
-                possible_slots = slot_pool.get_slots(stunde, stundenplan_.fächer)
+                possible_slots = slot_pool.get_slots(stunde, stundenplan_.fächer, stundenplan_)
 
                 # ranking der Slots
                 slot_pool.set_slot_ranking(possible_slots, stundenplan_)
@@ -32,7 +31,8 @@ def fill_stundenpläne(stundenpläne: {any: Stundenplan}):
                 possible_slots = slot_pool.filter_slots(possible_slots, stundenplan_)
 
                 if not possible_slots:
-                    stundenplan_.add_slot(Slot(stunde, Fach.not_found_fach()))
+                    stundenplan_.add_slot(
+                        Slot(stunde, Fach.not_found_fach(stundenplan_.options.get_default_not_found_fach_name())))
                     continue
 
                 # sortiere Slots

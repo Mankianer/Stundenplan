@@ -7,13 +7,13 @@ Stunde = TypeVar("Stunde", bound=stundenplan.classes.Stunde)
 Fach = TypeVar("Fach", bound=stundenplan.classes.Fach)
 Stundenplan = TypeVar("Stundenplan", bound=stundenplan.classes.Stundenplan)
 
-slot_generator_methods: [Callable[[Stunde, List[Fach]], List[Slot]]] = []
+slot_generator_methods: [Callable[[Stunde, List[Fach], Stundenplan], List[Slot]]] = []
 slot_ranking_methods: [Callable[[Slot, Stundenplan], int]] = []
 slot_filter_methods: [Callable[[Slot, Stundenplan], bool]] = []
 
 
-def slot_generator_method(func: Callable[[Stunde, List[Fach]], List[Slot]]) -> [
-    Callable[[[Stunde, List[Fach]]], List[Slot]]]:
+def slot_generator_method(func: Callable[[Stunde, List[Fach], Stundenplan], List[Slot]]) -> [
+    Callable[[Stunde, List[Fach], Stundenplan], List[Slot]]]:
     """Fügt eine Methode der Liste der Methoden hinzu"""
     slot_generator_methods.append(func)
 
@@ -65,9 +65,9 @@ def set_slot_ranking(slots: [Slot], stundenplan_: Stundenplan):
         slot.ranking = get_ranking(slot, stundenplan_)
 
 
-def get_slots(stunde: Stunde, fächer: List[Fach]) -> [Slot]:
+def get_slots(stunde: Stunde, fächer: List[Fach], stundenplan_: Stundenplan) -> [Slot]:
     """Ruft alle slot_generator_methods auf und gibt das Ergebnis als Liste zurück"""
     slots = []
     for method in slot_generator_methods:
-        slots.extend(method(stunde, fächer))
+        slots.extend(method(stunde, fächer, stundenplan_))
     return slots
