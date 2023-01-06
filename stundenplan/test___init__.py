@@ -20,6 +20,7 @@ class Test(TestCase):
                               'slots are not correct - Lücke')
 
     def test_create_plans_config(self):
-        # test config is created when not given
+        # test config is default_config when not given
         plans = stundenplan.create_plans("test", slot_mask={})
         self.assertIsNotNone(plans[0].config, 'config is not created')
+        self.assertDictEqual(stundenplan.get_default_config(), plans[0].config, 'config is not default_config')

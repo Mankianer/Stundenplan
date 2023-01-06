@@ -1,4 +1,5 @@
 from stundenplan.classes import Slot, TablePlan
+import stundenplan.slot_methods as slot_methods
 
 
 def create_plans(*names, slot_mask, config=None) -> [TablePlan]:
@@ -15,7 +16,7 @@ def create_plans(*names, slot_mask, config=None) -> [TablePlan]:
     """
 
     if config is None:
-        config = {}  # TODO: add default config
+        config = get_default_config()
 
     expected_slot_context = None  # TODO: add expected slot context from config
     default_slot_options = None # TODO: add default slot options from config
@@ -24,3 +25,11 @@ def create_plans(*names, slot_mask, config=None) -> [TablePlan]:
     for name in names:
         plans.append(TablePlan(name, slot_mask, config, expected_slot_context, default_slot_options))
     return plans
+
+
+def get_default_config():
+    return {
+        "slot_generator": slot_methods.global_generator_methods.copy(),
+        "slot_filter": [],
+        "slot_ranker": [],
+    }
