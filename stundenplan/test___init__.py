@@ -1,5 +1,6 @@
 from unittest import TestCase
 import stundenplan
+import stundenplan.slot_methods as slot_methods
 
 
 class Test(TestCase):
@@ -24,3 +25,22 @@ class Test(TestCase):
         plans = stundenplan.create_plans("test", slot_mask={})
         self.assertIsNotNone(plans[0].config, 'config is not created')
         self.assertDictEqual(stundenplan.get_default_config(), plans[0].config, 'config is not default_config')
+
+    def test_get_default_config(self):
+        # setup slot_methods
+        @slot_methods.slot_generator_method(expected_slot_context=None)
+        @slot_methods.slot_rating_method(expected_slot_context=None)
+        @slot_methods.slot_filter_method(expected_slot_context=None)
+        def test_func():
+            return []
+
+        defaults = stundenplan.get_default_config()
+        # slot_generator is equals to global_generator_methods
+        self.assertCountEqual(defaults["slot_generator"], stundenplan.slot_methods.global_generator_methods,
+                              'slot_generator is not equal to global_generator_methods')
+        # slot_rating is equals to global_rating_methods
+        self.assertCountEqual(defaults["slot_rating"], stundenplan.slot_methods.global_rating_methods,
+                              'slot_rating is not equal to global_rating_methods')
+        # slot_filter is equals to global_filter_methods
+        self.assertCountEqual(defaults["slot_filter"], stundenplan.slot_methods.global_filter_methods,
+                              'slot_filter is not equal to global_filter_methods')
