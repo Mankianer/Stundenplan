@@ -15,7 +15,7 @@ class Slot:
 
 
 class TablePlan:
-    def __init__(self, name, slot_mask, config, slot_context, slot_options):
+    def __init__(self, name, slot_mask, config, expected_slot_context, slot_options):
         """
         :param name: str
         :param slot_mask: {day: [slot_number, slot_number, ...], ...} mask of slots that are available per day
@@ -25,7 +25,8 @@ class TablePlan:
         """
         self.name = name
         self.slot_mask = slot_mask
-        self.slot_context = slot_context
+        self.slot_context = {}
+        self.expected_slot_context = expected_slot_context
         self.slot_options = slot_options
         self.config = config
         self.__plan = {}
