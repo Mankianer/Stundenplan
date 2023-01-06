@@ -1,11 +1,11 @@
 class Slot:
-    def __init__(self, context, options, day, start, end, ranking=0):
+    def __init__(self, context, options, day, start, end, rating=0):
         self.context = context
         self.options = options
         self.day = day
         self.start = start
         self.end = end
-        self.ranking = ranking
+        self.rating = rating
 
     def __str__(self):
         return f"{self.day}:({self.start}-{self.end})"
