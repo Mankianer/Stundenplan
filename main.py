@@ -1,4 +1,4 @@
-import stundenplan
+import mankianerplan
 from mergedeep import merge
 
 print("Hallo")

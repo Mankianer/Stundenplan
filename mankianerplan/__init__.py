@@ -1,5 +1,5 @@
-from stundenplan.classes import Slot, TablePlan
-import stundenplan.slot_methods as slot_methods
+from mankianerplan.classes import Slot, TablePlan
+import mankianerplan.slot_methods as slot_methods
 from mergedeep import merge
 
 
@@ -27,7 +27,7 @@ def create_plans(*names, slot_mask, config=None) -> [TablePlan]:
     return plans
 
 
-def get_default_slot_options(config) -> {}:
+def get_default_slot_options(config):
     """Returns a dict of default slot options for each slot method type
     """
     slot_config = {}
