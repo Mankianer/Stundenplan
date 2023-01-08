@@ -42,6 +42,6 @@ def get_default_slot_options(config):
 def get_default_config():
     return {
         "slot_generator": slot_methods.global_generator_methods.copy(),
-        "slot_filter": slot_methods.global_filter_methods.copy(),
         "slot_rating": slot_methods.global_rating_methods.copy(),
+        "slot_filter": slot_methods.global_filter_methods.copy(),
     }
